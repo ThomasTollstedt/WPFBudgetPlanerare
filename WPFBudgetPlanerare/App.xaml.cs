@@ -1,6 +1,10 @@
 ﻿using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Windows;
+using WPFBudgetPlanerare.DTO;
+using WPFBudgetPlanerare.Models;
+using WPFBudgetPlanerare.Services;
 
 namespace WPFBudgetPlanerare
 {
@@ -9,6 +13,13 @@ namespace WPFBudgetPlanerare
     /// </summary>
     public partial class App : Application
     {
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            
+        }
     }
 
 }

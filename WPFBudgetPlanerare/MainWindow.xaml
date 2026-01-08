@@ -7,6 +7,86 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>          
 
+        <!-- User Name Header -->
+        <Border Grid.Column="0" Grid.Row="0" 
+                Background="#2196F3" 
+                Padding="15,10" 
+                Margin="10,10,10,5">
+            <StackPanel>
+                <TextBlock Text="Välkommen" 
+                           Foreground="White" 
+                           FontSize="20" 
+                           Opacity="0.9"/>
+                <TextBlock Text="{Binding UserName}" 
+                           Foreground="White" 
+                           FontWeight="Bold" 
+                           FontSize="18"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Transactions List -->
+        <ListView Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" 
+                  ItemsSource="{Binding Transactions}"
+                  Margin="10,5,10,10">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="LightGray" BorderThickness="1" 
+                            Padding="10" Margin="5" CornerRadius="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Category -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" 
+                                       Text="{Binding CategoryDisplayName}" 
+                                       FontWeight="Bold" FontSize="14"/>
+                            
+                            <!-- Amount -->
+                            <TextBlock Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                                       Text="{Binding Amount, StringFormat='{}{0:N2} kr'}" 
+                                       FontWeight="Bold" FontSize="14"
+                                       HorizontalAlignment="Right"/>
+
+                            <!-- Description -->
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                                       Text="{Binding Description}" 
+                                       FontStyle="Italic" Margin="0,5,0,0"/>
+
+                            <!-- Date Range -->
+                            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                        Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock Text="Start: "/>
+                                <TextBlock Text="{Binding StartDate, StringFormat='{}{0:yyyy-MM-dd}'}"/>
+                                <TextBlock Text=" | End: " Margin="10,0,0,0"/>
+                                <TextBlock Text="{Binding EndDate, StringFormat='{}{0:yyyy-MM-dd}'}"/>
+                            </StackPanel>
+
+                            <!-- Frequency -->
+                            <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
+                                       Text="{Binding Frequency}" 
+                                       Foreground="Gray" Margin="0,5,0,0"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Window>
