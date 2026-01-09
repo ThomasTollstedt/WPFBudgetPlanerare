@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using WPFBudgetPlanerare.Command;
 using WPFBudgetPlanerare.Models;
 using WPFBudgetPlanerare.Services;
 
@@ -15,45 +16,27 @@ namespace WPFBudgetPlanerare.VM
         private readonly ReportService _reportService;
         private readonly User _user;
 
-        public MainViewModel(ReportService reportService, User user)
-        {
-            _reportService = reportService;
-            _user = user;
-        }
-
-        public string UserName
-        {
-            get { return _user.UserName; }
-           
-        }
-
-        public ObservableCollection<TransactionBase> Transactions
-        {
-            get
-            {
-                var transactions = _user.Transactions
-                    /*.*//*OfType<TransactionBase>()*/
-                    .OrderBy(t => t.StartDate)
-                    .ToList();
-                return new ObservableCollection<TransactionBase>(transactions);
-            }
-        }
-
         private ViewModelBase _currentViewModel;
 
         public ViewModelBase CurrentViewModel
         {
             get { return _currentViewModel; }
-            set { _currentViewModel = value;
-                RaisePropertyChanged();
-            }
+            set { _currentViewModel = value; RaisePropertyChanged(); }
         }
 
-        public MainViewModel()
+        public RelayCommand NavigateToDashboardCommand { get; set; }
+        public RelayCommand NavigateToForecastCommand { get; set; }
+
+        public MainViewModel(ReportService reportService, User user)
         {
-            
-        }
+            _reportService = reportService;
+            _user = user;
 
+            NavigateToDashboardCommand = new RelayCommand(o => { CurrentViewModel = new DashboardViewModel(_user); });
+            NavigateToForecastCommand = new RelayCommand(o => { CurrentViewModel = new ForecastViewModel(_user, _reportService); });
+
+            CurrentViewModel = new DashboardViewModel(_user); // Sätter start-vyn
+        }
 
     }
 }
