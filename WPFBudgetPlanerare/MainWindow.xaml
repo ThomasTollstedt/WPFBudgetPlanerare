@@ -19,6 +19,11 @@
         <DataTemplate DataType="{x:Type vm:ForecastViewModel}">
             <local:ForecastView />
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:AddTransactionViewModel}">
+            <local:AddTransactionView />
+        </DataTemplate>
+
     </Window.Resources>
 
     <Grid>
@@ -42,6 +47,7 @@
                         Padding="10" Margin="0,5"/>
 
                 <Button Content="Lägg till Transaktion"
+                        Command="{Binding NavigateToAddTransactionCommand}"
                         Padding="10" Margin="0,5"
                         Background="#e0e0e0"/>
             </StackPanel>

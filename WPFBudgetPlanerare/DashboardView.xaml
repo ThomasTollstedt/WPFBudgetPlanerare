@@ -85,6 +85,16 @@
                             <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
                                Text="{Binding Frequency}" 
                                Foreground="Gray" Margin="0,5,0,0"/>
+
+                            <Button Grid.Row="4" Grid.Column="1" 
+                                Content="Ta bort" 
+                                Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"
+                                HorizontalAlignment="Right"
+                                Background="#f44336" Foreground="White" 
+                                Padding="5,2" Margin="0,0,0,0"/>
+
+
                         </Grid>
                     </Border>
                 </DataTemplate>

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WPFBudgetPlanerare.Command;
 using WPFBudgetPlanerare.Models;
 
 namespace WPFBudgetPlanerare.VM
@@ -15,30 +16,39 @@ namespace WPFBudgetPlanerare.VM
         public DashboardViewModel(User user)
         {
             _user = user;
+
+            var transactions = _user.Transactions
+            .OrderByDescending(t => t.StartDate)
+            .ToList();
+
+            Transactions = new ObservableCollection<TransactionBase>(transactions);
+
+            DeleteCommand = new RelayCommand<TransactionBase>(t => DeleteTransaction(t));
         }
 
+
+
+        public RelayCommand<TransactionBase> DeleteCommand { get; }
+        public ObservableCollection<TransactionBase> Transactions { get; }
+
         public string UserName => _user.UserName;
-      
+
 
         public decimal AnnualIncome
         {
             get
             {
-
                 return _user.AnnualIncome;
             }
         }
 
-        public ObservableCollection<TransactionBase> Transactions
+        
+        
+
+        private void DeleteTransaction(TransactionBase transaction)
         {
-            get
-            {
-                var transactions = _user.Transactions
-                    /*.*//*OfType<TransactionBase>()*/
-                    .OrderBy(t => t.StartDate)
-                    .ToList();
-                return new ObservableCollection<TransactionBase>(transactions);
-            }
+            _user.Transactions.Remove(transaction);
+            Transactions.Remove(transaction);
         }
 
     }
