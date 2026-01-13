@@ -25,39 +25,41 @@ namespace WPFBudgetPlanerare.Services
 
         }
 
-        public decimal GetTotalIncomeForMonth(User user, int month, int year)
-        {
-            var monthlyIncome = user.Transactions
-                .OfType<Income>()
-                .Where(t => t.StartDate.Year == year && t.StartDate.Month == month)
-                .Sum(t => t.Amount);
-
-            return monthlyIncome;
-        }
-
-        public decimal GetTotalExpensesForMonth(User user, int month, int year)
+        public List<TransactionBase> GetTransactionsForMonth(User user, int year, int month)
         {
             DateOnly targetPeriod = new DateOnly(year, month, 1);
             var lastDayOfPeriod = targetPeriod.AddMonths(1).AddDays(-1);
 
-            var monthlyExpenses = user.Transactions
-                .OfType<Expense>()
-                .Where(t => //Villkoren för att inkludera transaktioner baserat på deras frekvens
-                (t.Frequency == TransactionFrequency.Engångs && t.StartDate.Year == year && t.StartDate.Month == month)
-                ||
-                (t.Frequency == TransactionFrequency.Månatlig && t.StartDate <= lastDayOfPeriod && (t.EndDate == null || t.EndDate >= targetPeriod))
-                ||
-                (t.Frequency == TransactionFrequency.Årlig && t.StartDate.Month == month && t.StartDate.Year <= year && (t.EndDate == null || t.EndDate >= targetPeriod)))
-                .Sum(t => t.Amount);
+            return user.Transactions
+                .Where(t =>
+                    (t.Frequency == TransactionFrequency.Engångs && t.StartDate.Year == year && t.StartDate.Month == month)
+                    ||
+                    (t.Frequency == TransactionFrequency.Månatlig && t.StartDate <= lastDayOfPeriod && (t.EndDate == null || t.EndDate >= targetPeriod))
+                    ||
+                    (t.Frequency == TransactionFrequency.Årlig && t.StartDate.Month == month && t.StartDate.Year <= year && (t.EndDate == null || t.EndDate >= targetPeriod)))
+                .ToList();
+        }
 
-            return monthlyExpenses;
+        public decimal GetTotalIncomeForMonth(User user, int year, int month)
+        {
+            var transaction = GetTransactionsForMonth(user, year, month);
+
+            return transaction.OfType<Income>().Sum(t => t.Amount);
+        }
+
+        public decimal GetTotalExpensesForMonth(User user, int year, int month)
+        {
+          var transactions = GetTransactionsForMonth(user, year, month);
+            return transactions.OfType<Expense>().Sum(t => t.Amount);
 
         }
 
-        public MonthlySummary GetMonthlySummary(User user, int month, int year)
+
+
+        public MonthlySummary GetMonthlySummary(User user, int year, int month)
         {
-            var totalIncome = GetTotalIncomeForMonth(user, month, year);
-            var totalExpenses = GetTotalExpensesForMonth(user, month, year);
+            var totalIncome = GetTotalIncomeForMonth(user, year, month);
+            var totalExpenses = GetTotalExpensesForMonth(user, year, month);
 
             return new MonthlySummary
             {

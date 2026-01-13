@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="WPFBudgetPlanerare.AddTransactionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFBudgetPlanerare"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="600">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
+                   Text="Lägg till ny transaktion" 
+                   FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Typ:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <RadioButton Content="Utgift" 
+                         IsChecked="{Binding IsExpense}" 
+                         GroupName="TransType" 
+                         Margin="0,0,20,0"/>
+
+            <RadioButton Content="Inkomst" 
+                         GroupName="TransType"/>
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Beskrivning:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+        <TextBox Grid.Row="2" Grid.Column="1" 
+                 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
+                 Padding="5" Margin="0,0,0,15"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Belopp:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+        <TextBox Grid.Row="3" Grid.Column="1" 
+                 Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" 
+                 Padding="5" Margin="0,0,0,15"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Kategori:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+        <ComboBox Grid.Row="4" Grid.Column="1" 
+                  ItemsSource="{Binding AvailableCategories}" 
+                  SelectedItem="{Binding SelectedCategory}"
+                  Padding="5" Margin="0,0,0,15"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Datum:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+        <DatePicker Grid.Row="5" Grid.Column="1" 
+                    SelectedDate="{Binding Date}"
+                    Margin="0,0,0,15"/>
+
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Slutdatum:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+        <DatePicker Grid.Row="6" Grid.Column="1" 
+                    SelectedDate="{Binding EndDate}"
+                    Margin="0,0,0,15"/>
+
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="Frekvens:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+        <ComboBox Grid.Row="7" Grid.Column="1" 
+                  ItemsSource="{Binding Frequencies}"
+                  SelectedItem="{Binding SelectedFrequency}"
+                  Padding="5" Margin="0,0,0,20"/>
+
+        <Button Grid.Row="8" Grid.Column="1" 
+                Content="Spara Transaktion" 
+                Command="{Binding SaveCommand}"
+                Padding="10,5" HorizontalAlignment="Left" Width="150"
+                Background="#4CAF50" Foreground="White" FontWeight="Bold"/>
+
+    </Grid>
+</UserControl>
