@@ -27,5 +27,21 @@ namespace WPFBudgetPlanerare.Models
         public int? RecurringMonth { get; set; } // Månad för årlig transaktion
 
         public abstract string CategoryDisplayName { get; }
+
+        public bool IsActiveInMonth(int year, int month)
+        {
+            DateOnly targetPeriod = new DateOnly(year, month, 1);
+            var lastDayOfPeriod = targetPeriod.AddMonths(1).AddDays(-1);
+
+            return Frequency switch
+            {
+                TransactionFrequency.Engångs => StartDate.Year == year && StartDate.Month == month,
+                TransactionFrequency.Månatlig => StartDate <= lastDayOfPeriod && (EndDate == null || EndDate >= targetPeriod),
+                TransactionFrequency.Årlig => StartDate.Month == month && StartDate.Year <= year && (EndDate == null || EndDate >= targetPeriod),
+                _ => false
+
+            };
+
+        }
     }
 }
