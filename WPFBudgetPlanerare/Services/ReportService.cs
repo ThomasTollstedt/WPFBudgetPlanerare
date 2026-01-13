@@ -14,7 +14,7 @@ namespace WPFBudgetPlanerare.Services
         {
             if (user.TotalWorkHours <= 0)
             {
-                throw new ArgumentException("Anställd måste ha total arbetstid  över 0 timmar.");
+                throw new ArgumentException("Anställd måste ha total arbetstid >0 timmar.");
             }
             return user.AnnualIncome / user.TotalWorkHours;
 
@@ -27,16 +27,8 @@ namespace WPFBudgetPlanerare.Services
 
         public List<TransactionBase> GetTransactionsForMonth(User user, int year, int month)
         {
-            DateOnly targetPeriod = new DateOnly(year, month, 1);
-            var lastDayOfPeriod = targetPeriod.AddMonths(1).AddDays(-1);
-
             return user.Transactions
-                .Where(t =>
-                    (t.Frequency == TransactionFrequency.Engångs && t.StartDate.Year == year && t.StartDate.Month == month)
-                    ||
-                    (t.Frequency == TransactionFrequency.Månatlig && t.StartDate <= lastDayOfPeriod && (t.EndDate == null || t.EndDate >= targetPeriod))
-                    ||
-                    (t.Frequency == TransactionFrequency.Årlig && t.StartDate.Month == month && t.StartDate.Year <= year && (t.EndDate == null || t.EndDate >= targetPeriod)))
+                .Where(t => t.IsActiveInMonth(year, month))
                 .ToList();
         }
 
@@ -66,6 +58,10 @@ namespace WPFBudgetPlanerare.Services
                 TotalIncome = totalIncome,
                 TotalExpenses = totalExpenses
             };
+           
+
+
+          
            
 
 

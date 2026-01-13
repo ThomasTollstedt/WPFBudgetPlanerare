@@ -69,14 +69,8 @@ namespace WPFBudgetPlanerare
 
             // Create your dependencies
             //var user = new User(); // Initialize with your user data
-            var user2 = new User
-            {
-                Id = 1,
-                UserName = "Thomas",
-                AnnualIncome = 60000m,
-                TotalWorkHours = 1600m
-
-            };
+           
+            
             user.Transactions.Add(income);
             user.Transactions.Add(expense);
             user.Transactions.Add(expense2);
