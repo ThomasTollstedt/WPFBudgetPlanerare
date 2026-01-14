@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WPFBudgetPlanerare
+namespace WPFBudgetPlanerare.Views
 {
     /// <summary>
-    /// Interaction logic for AddTransactionView.xaml
+    /// Interaction logic for ForecastView.xaml
     /// </summary>
-    public partial class AddTransactionView : UserControl
+    public partial class ForecastView : UserControl
     {
-        public AddTransactionView()
+        public ForecastView()
         {
             InitializeComponent();
         }

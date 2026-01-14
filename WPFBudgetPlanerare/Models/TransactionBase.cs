@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WPFBudgetPlanerare.VM;
 
 namespace WPFBudgetPlanerare.Models
 {
@@ -13,15 +14,82 @@ namespace WPFBudgetPlanerare.Models
         Årlig,
         Engångs
     }
-    public abstract class TransactionBase
+    public abstract class TransactionBase : ViewModelBase // Ärver från ViewModelBase för att möjliggöra PropertyChanged-händelser vid EDIT
     {
-        
+
         public int Id { get; set; }
-        public decimal Amount { get; set; }
-        public string? Description { get; set; }
-        public DateOnly StartDate { get; set; }
-        public DateOnly? EndDate { get; set; }
-        public TransactionFrequency Frequency { get; set; }
+
+       
+        private decimal _amount;
+        public decimal Amount
+        {
+            get { return _amount; }
+            set
+            {
+                if (_amount != value)
+                {
+                    _amount = value; RaisePropertyChanged();
+                }
+
+            }
+        }
+
+        private string? _description;
+        public string? Description
+        {
+            get { return _description; }
+            set
+            {
+                if (_description != value)
+                {
+                    _description = value; RaisePropertyChanged();
+                }
+            }
+        }
+
+        private DateOnly _startDate;
+        public DateOnly StartDate
+        {
+            get { return _startDate; }
+
+            set
+            {
+                if (_startDate != value)
+                {
+                    _startDate = value; RaisePropertyChanged();
+                }
+
+            }
+
+        }
+
+        private DateOnly? _endDate;
+        public DateOnly? EndDate
+        {
+
+            get { return _endDate; }
+
+            set
+            {
+                if (_endDate != value)
+                {
+                    _endDate = value; RaisePropertyChanged();
+                }
+            }
+
+        }
+
+        private TransactionFrequency _frequency;
+        public TransactionFrequency Frequency
+        {
+
+            get { return _frequency; }
+            set
+            {
+                _frequency = value; RaisePropertyChanged();
+            }
+
+        }
 
         [Range(1, 12)]
         public int? RecurringMonth { get; set; } // Månad för årlig transaktion

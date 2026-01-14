@@ -1,0 +1,114 @@
+﻿<Window x:Class="WPFBudgetPlanerare.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
+        xmlns:local="clr-namespace:WPFBudgetPlanerare.Views"
+        xmlns:vm="clr-namespace:WPFBudgetPlanerare.VM"
+        
+        
+        mc:Ignorable="d"
+        Title="BudgetPlanerare" Height="500" Width="900"
+        Background="#F5F3EF">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <local:DashboardView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:ForecastViewModel}">
+            <local:ForecastView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:AddTransactionViewModel}">
+            <local:AddTransactionView />
+        </DataTemplate>
+
+        <!-- Menu Button Style -->
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#2F3E3C"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}"
+                                BorderBrush="#D9D5CF"
+                                BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EBEAE6"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#4A6F6D"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="220"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentControl Grid.Column="0" Content="{Binding CurrentViewModel}"/>
+
+        <Border Grid.Column="1" 
+                Background="#FAFAF8" 
+                BorderBrush="#D9D5CF" 
+                BorderThickness="1,0,0,0">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" 
+                                  BlurRadius="8" 
+                                  ShadowDepth="-2" 
+                                  Opacity="0.05"/>
+            </Border.Effect>
+            <StackPanel Margin="15">
+                <TextBlock Text="MENY" 
+                           FontWeight="SemiBold" 
+                           FontSize="16" 
+                           Margin="0,5,0,25" 
+                           HorizontalAlignment="Center"
+                           Foreground="#2F3E3C"/>
+
+
+                <Button Content="📊 Översikt" 
+                        Command="{Binding NavigateToDashboardCommand}"
+                        Style="{StaticResource MenuButtonStyle}"/>
+
+                <Button Content="📈 Månadsprognos" 
+                        Command="{Binding NavigateToForecastCommand}"
+                        Style="{StaticResource MenuButtonStyle}"/>
+
+                <Button Content="➕ Lägg till Transaktion"
+                        Command="{Binding NavigateToAddTransactionCommand}"
+                        Style="{StaticResource MenuButtonStyle}"/>
+
+                <!-- Decorative accent at bottom -->
+                <Border Background="#4A6F6D"
+                        Height="3"
+                        CornerRadius="2"
+                        Margin="0,20,0,0"
+                        Opacity="0.3"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,286 @@
+﻿<UserControl x:Class="WPFBudgetPlanerare.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFBudgetPlanerare"
+             xmlns:models="clr-namespace:WPFBudgetPlanerare.Models"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="#F5F3EF">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- User Name Header -->
+        <Border Grid.Row="0" 
+                Background="#4A6F6D"
+                Padding="20,15" 
+                Margin="15,15,15,10"
+                CornerRadius="8">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" 
+                                  BlurRadius="12" 
+                                  ShadowDepth="2" 
+                                  Opacity="0.15"/>
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="Välkommen" 
+                           Foreground="#F5F3EF" 
+                           FontSize="18" 
+                           FontWeight="Light"
+                           Opacity="0.85"/>
+                <TextBlock Foreground="White" 
+                           FontWeight="SemiBold" 
+                           FontSize="22"
+                           Margin="0,5,0,0">
+                    <Run Text=""/>
+                    <Run Text="{Binding UserName, Mode=OneWay}"/>
+                </TextBlock>
+                <TextBlock Foreground="White"
+                           FontWeight="Medium"
+                           FontSize="15"
+                           Margin="0,8,0,0">
+                    <Run Text="Årsinkomst: "/>
+                    <Run Text="{Binding AnnualIncome, Mode=OneWay, StringFormat='{}{0:N0} kr'}" FontWeight="SemiBold"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+        
+        <!-- Filter Radio Buttons -->
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    Background="Transparent"
+                    Margin="15,0,15,10">
+            <RadioButton Content="Visa Allt" 
+                         Command="{Binding FilterCommand}" 
+                         CommandParameter="{x:Static models:TransactionFilterType.All}"
+                         Margin="5,5,15,5"
+                         FontWeight="Medium"
+                         FontSize="13"
+                         Foreground="#2F3E3C"/>
+            <RadioButton Content="Visa Inkomster" 
+                         Command="{Binding FilterCommand}" 
+                         CommandParameter="{x:Static models:TransactionFilterType.Income}"
+                         Margin="5,5,15,5"
+                         FontWeight="Medium"
+                         FontSize="13"
+                         Foreground="#2F3E3C"/>
+            <RadioButton Content="Visa Utgifter" 
+                         Command="{Binding FilterCommand}" 
+                         CommandParameter="{x:Static models:TransactionFilterType.Expenses}"
+                         Margin="5,5,15,5"
+                         FontWeight="Medium"
+                         FontSize="13"
+                         Foreground="#2F3E3C"/>
+        </StackPanel>
+
+        <!-- Transactions List -->
+        <ListView Grid.Row="2"
+                  ItemsSource="{Binding Transactions}"
+                  Margin="15,0,15,15"
+                  HorizontalContentAlignment="Stretch"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  Background="Transparent"
+                  BorderThickness="0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <!-- Transaction Card with Shadow Effect -->
+                    <Border Background="White" 
+                            BorderBrush="#D9D5CF" 
+                            BorderThickness="1" 
+                            Padding="18" 
+                            Margin="5,5,5,10" 
+                            CornerRadius="10">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" 
+                                              BlurRadius="10" 
+                                              ShadowDepth="3" 
+                                              Opacity="0.08"/>
+                        </Border.Effect>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Category with Accent Line -->
+                            <Border Grid.Row="0" Grid.Column="0" 
+                                    BorderBrush="#4A6F6D" 
+                                    BorderThickness="0,0,0,2" 
+                                    Padding="0,0,0,8"
+                                    Margin="0,0,0,8">
+                                <TextBlock Text="{Binding CategoryDisplayName}" 
+                                           FontWeight="SemiBold" 
+                                           FontSize="17"
+                                           Foreground="#2F3E3C"/>
+                            </Border>
+
+                            <!-- Amount with Background -->
+                            <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                                    Background="#4A6F6D"
+                                    CornerRadius="6"
+                                    Padding="14,7"
+                                    Margin="12,0,0,8">
+                                <TextBlock Text="{Binding Amount, StringFormat='{}{0:N2} kr'}" 
+                                           FontWeight="SemiBold" 
+                                           FontSize="16"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"/>
+                            </Border>
+
+                            <!-- Description -->
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
+                                       Text="{Binding Description}" 
+                                       FontStyle="Italic" 
+                                       Foreground="#6B7878"
+                                       FontSize="13"
+                                       Margin="0,0,0,10"/>
+
+                            <!-- Date Range -->
+                            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                                        Orientation="Horizontal" 
+                                        Margin="0,0,0,12">
+                                <Border Background="#F5F3EF" 
+                                        CornerRadius="5" 
+                                        Padding="10,5"
+                                        BorderBrush="#D9D5CF"
+                                        BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Start: " 
+                                                   FontSize="12" 
+                                                   Foreground="#6B7878"
+                                                   FontWeight="Medium"/>
+                                        <TextBlock Text="{Binding StartDate, StringFormat='{}{0:yyyy-MM-dd}'}" 
+                                                   FontSize="12" 
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#2F3E3C"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="#F5F3EF" 
+                                        CornerRadius="5" 
+                                        Padding="10,5" 
+                                        Margin="10,0,0,0"
+                                        BorderBrush="#D9D5CF"
+                                        BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Slut: " 
+                                                   FontSize="12" 
+                                                   Foreground="#6B7878"
+                                                   FontWeight="Medium"/>
+                                        <TextBlock Text="{Binding EndDate, StringFormat='{}{0:yyyy-MM-dd}'}" 
+                                                   FontSize="12" 
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#2F3E3C"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Frequency Badge -->
+                            <Border Grid.Row="3" Grid.Column="0"
+                                    Background="#E8E8E4"
+                                    CornerRadius="15"
+                                    Padding="12,5"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Frequency}" 
+                                           Foreground="#2F3E3C"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"/>
+                            </Border>
+
+                            <!-- Button Container -->
+                            <StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                <!-- Edit Button -->
+                                <Button Content="Redigera" 
+                                        Command="{Binding DataContext.EditTransactionCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                        CommandParameter="{Binding}"
+                                        Background="#8B9D9B" 
+                                        Foreground="White" 
+                                        BorderThickness="0"
+                                        Padding="16,8" 
+                                        Margin="0,0,10,0"
+                                        MinWidth="80"
+                                        Cursor="Hand"
+                                        FontWeight="SemiBold"
+                                        FontSize="13">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="#8B9D9B"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                CornerRadius="6"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                                              VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#6F827F"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Delete Button -->
+                                <Button Content="Ta bort" 
+                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                        CommandParameter="{Binding}"
+                                        Background="#C17D6F" 
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Padding="16,8"
+                                        MinWidth="80"
+                                        Cursor="Hand"
+                                        FontWeight="SemiBold"
+                                        FontSize="13">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Background" Value="#C17D6F"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                CornerRadius="6"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                                              VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#A86959"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</UserControl>

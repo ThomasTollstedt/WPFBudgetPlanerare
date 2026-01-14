@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WPFBudgetPlanerare
+namespace WPFBudgetPlanerare.Views
 {
     /// <summary>
-    /// Interaction logic for DashboardView.xaml
+    /// Interaction logic for AddTransactionView.xaml
     /// </summary>
-    public partial class DashboardView : UserControl
+    public partial class AddTransactionView : UserControl
     {
-        public DashboardView()
+        public AddTransactionView()
         {
             InitializeComponent();
         }

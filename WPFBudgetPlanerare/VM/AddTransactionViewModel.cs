@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using WPFBudgetPlanerare.Command;
 using WPFBudgetPlanerare.Models;
@@ -14,10 +15,13 @@ namespace WPFBudgetPlanerare.VM
     public class AddTransactionViewModel : ViewModelBase
     {
         private readonly User _user;
+        private readonly TransactionBase? _transactionToEdit;
 
-        public AddTransactionViewModel(User user)
+        public AddTransactionViewModel(User user, ICommand toDashboardCommand, TransactionBase? transactionToEdit = null)
         {
             _user = user;
+            _transactionToEdit = transactionToEdit;
+            ToDashboardCommand = toDashboardCommand;
 
             Date = DateTime.Now;
             IsExpense = true;
@@ -28,13 +32,34 @@ namespace WPFBudgetPlanerare.VM
             }
             SelectedFrequency = TransactionFrequency.Månatlig; //Default value
 
+            if (transactionToEdit is not null)
+            {
+                Amount = transactionToEdit.Amount;
+                Description = transactionToEdit.Description;
+                Date = transactionToEdit.StartDate.ToDateTime(TimeOnly.MinValue);
+                if (transactionToEdit is Expense expense)
+                {
+
+                    SelectedCategory = expense.Category;
+                }
+                else if (transactionToEdit is Income income)
+                {
+                    IsExpense = false;
+                    SelectedCategory = income.Category;
+                }
+
+                SelectedFrequency = transactionToEdit.Frequency;
+
+            }
+
+
             SaveCommand = new RelayCommand(o => SaveTransaction());
         }
 
-      
+
 
         public RelayCommand SaveCommand { get; }
-
+        public ICommand ToDashboardCommand { get; }
 
         private bool _isExpense;
         public bool IsExpense
@@ -139,36 +164,55 @@ namespace WPFBudgetPlanerare.VM
 
             TransactionBase newTransaction;
 
+            if (_transactionToEdit == null) // Lägg till ny transaktion om det inte finns någon att redigera
+            {
                 if (IsExpense)
-            {
-                var expense = new Expense
                 {
-                    Amount = Amount,
-                    Description = Description,
-                    StartDate = DateOnly.FromDateTime(Date),
-                    EndDate = EndDate.HasValue ? DateOnly.FromDateTime(EndDate.Value) : null,
-                    Frequency = SelectedFrequency,
-                    Category = (ExpenseCategory)SelectedCategory //Konvertering (cast) till rätt Enum-typ för expense
-                };
-                //Hantera slutdatum 
-                newTransaction = expense;
-            }
-            else
-            {
-                var income = new Income
+                    var expense = new Expense
+                    {
+                        Amount = Amount,
+                        Description = Description,
+                        StartDate = DateOnly.FromDateTime(Date),
+                        EndDate = EndDate.HasValue ? DateOnly.FromDateTime(EndDate.Value) : null,
+                        Frequency = SelectedFrequency,
+                        Category = (ExpenseCategory)SelectedCategory //Konvertering (cast) till rätt Enum-typ för expense
+                    };
+
+                    newTransaction = expense;
+                }
+                else
                 {
-                    Amount = Amount,
-                    Description = Description,
-                    StartDate = DateOnly.FromDateTime(Date),
-                    Frequency = SelectedFrequency,
-                    Category = (IncomeCategory)SelectedCategory
-                };
-                newTransaction = income;
+                    var income = new Income
+                    {
+                        Amount = Amount,
+                        Description = Description,
+                        StartDate = DateOnly.FromDateTime(Date),
+                        Frequency = SelectedFrequency,
+                        Category = (IncomeCategory)SelectedCategory
+                    };
+                    newTransaction = income;
+                }
+                _user.Transactions.Add(newTransaction);
             }
-            _user.Transactions.Add(newTransaction);
-
-            ClearForm();
-
+            else // Redigera befintlig transaktion, referens så ändras direkt.
+            {
+                _transactionToEdit.Amount = Amount;
+                _transactionToEdit.Description = Description;
+                _transactionToEdit.StartDate = DateOnly.FromDateTime(Date);
+                _transactionToEdit.EndDate = EndDate.HasValue ? DateOnly.FromDateTime(EndDate.Value) : null;
+                _transactionToEdit.Frequency = SelectedFrequency;
+                if (_transactionToEdit is Expense expenseToUpdate)
+                {
+                    expenseToUpdate.Category = (ExpenseCategory)SelectedCategory;
+                }
+                else if (_transactionToEdit is Income incomeToUpdate)
+                {
+                    incomeToUpdate.Category = (IncomeCategory)SelectedCategory;
+                }
+                RaisePropertyChanged();
+            }
+            ClearForm(); // Anropar hjälpmetod för att rensa formuläret efter sparning
+            ToDashboardCommand.Execute(null);
         }
 
         private void ClearForm()
