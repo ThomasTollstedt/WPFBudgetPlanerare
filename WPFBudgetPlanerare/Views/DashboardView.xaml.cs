@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WPFBudgetPlanerare
+namespace WPFBudgetPlanerare.Views
 {
     /// <summary>
-    /// Interaction logic for ForecastView.xaml
+    /// Interaction logic for DashboardView.xaml
     /// </summary>
-    public partial class ForecastView : UserControl
+    public partial class DashboardView : UserControl
     {
-        public ForecastView()
+        public DashboardView()
         {
             InitializeComponent();
         }

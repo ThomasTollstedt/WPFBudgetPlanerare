@@ -33,11 +33,25 @@ namespace WPFBudgetPlanerare.VM
             _reportService = reportService;
             _user = user;
 
-            NavigateToDashboardCommand = new RelayCommand(o => { CurrentViewModel = new DashboardViewModel(_user); });
-            NavigateToForecastCommand = new RelayCommand(o => { CurrentViewModel = new ForecastViewModel(_user, _reportService); });
-            NavigateToAddTransactionCommand = new RelayCommand(o => { CurrentViewModel = new AddTransactionViewModel(_user); });
+            
+            
+            NavigateToAddTransactionCommand = new RelayCommand(o =>
+            {
+                if (o is TransactionBase transactionToEdit)
+                {
+                    CurrentViewModel = new AddTransactionViewModel(_user, NavigateToDashboardCommand, transactionToEdit);
+                }
+                else
+                {
+                    CurrentViewModel = new AddTransactionViewModel(_user, NavigateToDashboardCommand);
 
-            CurrentViewModel = new DashboardViewModel(_user); // Sätter start-vyn
+                }
+            });
+
+            NavigateToDashboardCommand = new RelayCommand(o => { CurrentViewModel = new DashboardViewModel(_user, NavigateToAddTransactionCommand); });
+            NavigateToForecastCommand = new RelayCommand(o => { CurrentViewModel = new ForecastViewModel(_user, _reportService); });
+
+            CurrentViewModel = new DashboardViewModel(_user, NavigateToAddTransactionCommand); // Sätter start-vyn
         }
 
     }

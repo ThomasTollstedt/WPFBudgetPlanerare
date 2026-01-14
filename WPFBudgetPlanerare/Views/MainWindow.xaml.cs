@@ -12,7 +12,7 @@ using WPFBudgetPlanerare.Models;
 using WPFBudgetPlanerare.Services;
 using WPFBudgetPlanerare.VM;
 
-namespace WPFBudgetPlanerare
+namespace WPFBudgetPlanerare.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
