@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
 using WPFBudgetPlanerare.Repositories;
+using WPFBudgetPlanerare.Services;
 
 namespace WPFBudgetPlanerare.VM
 {
@@ -17,16 +18,19 @@ namespace WPFBudgetPlanerare.VM
     public class DashboardViewModel : ViewModelBase
     {
         private readonly User _user;
-        private readonly ITransactionRepository _transactionRepo;
+        private readonly IReportService _reportService;
 
-        public DashboardViewModel(ITransactionRepository transactionRepo, User user, ICommand editCommand)
+        //private readonly ITransactionRepository _transactionRepo;
+
+        public DashboardViewModel(/*ITransactionRepository transactionRepo,*/ IReportService reportService, User user, ICommand editCommand)
         {
             _user = user;
-            _transactionRepo = transactionRepo;
+            _reportService = reportService;
+            //_transactionRepo = transactionRepo;
             EditTransactionCommand = editCommand;
 
-          
-           
+
+
 
             Transactions = new ObservableCollection<TransactionBase>();
             DeleteCommand = new RelayCommand<TransactionBase>(t => DeleteTransaction(t));
@@ -37,13 +41,14 @@ namespace WPFBudgetPlanerare.VM
 
         private async void LoadTransactions()
         {
-            var result = await _transactionRepo.GetAllTransactionsAsync(_user.Id);
+            var result = await _reportService.GetAllTransactionsAsync(_user.Id);
 
             Transactions.Clear();
             foreach (var item in result)
             {
                 Transactions.Add(item);
-            };
+            }
+            ;
         }
 
         public ICommand EditTransactionCommand { get; }
@@ -74,10 +79,11 @@ namespace WPFBudgetPlanerare.VM
             }
         }
 
-        private void DeleteTransaction(TransactionBase transaction)
+        private async Task DeleteTransaction(TransactionBase transaction)
         {
             _user.Transactions.Remove(transaction);
             Transactions.Remove(transaction);
+            await _reportService.DeleteTransactionAsync(transaction);
         }
 
         public void FilterTransaction(object t)
@@ -99,10 +105,6 @@ namespace WPFBudgetPlanerare.VM
                         break;
                 }
             }
-
-
-
-
         }
     }
 }

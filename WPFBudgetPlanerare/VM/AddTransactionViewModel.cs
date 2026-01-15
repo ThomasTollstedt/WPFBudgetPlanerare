@@ -10,18 +10,19 @@ using System.Windows.Media.Media3D;
 using WPFBudgetPlanerare.Command;
 using WPFBudgetPlanerare.Models;
 using WPFBudgetPlanerare.Repositories;
+using WPFBudgetPlanerare.Services;
 
 namespace WPFBudgetPlanerare.VM
 {
     public class AddTransactionViewModel : ViewModelBase
     {
-        private readonly ITransactionRepository _transactionRepo;
+        private readonly IReportService _reportService;
         private readonly User _user;
         private readonly TransactionBase? _transactionToEdit;
 
-        public AddTransactionViewModel(ITransactionRepository transactionRepo,User user, ICommand toDashboardCommand, TransactionBase? transactionToEdit = null)
+        public AddTransactionViewModel(IReportService reportService,User user, ICommand toDashboardCommand, TransactionBase? transactionToEdit = null)
         {
-            _transactionRepo = transactionRepo;
+            _reportService = reportService;
             _user = user;
             _transactionToEdit = transactionToEdit;
             ToDashboardCommand = toDashboardCommand;
@@ -29,6 +30,7 @@ namespace WPFBudgetPlanerare.VM
             Date = DateTime.Now;
             IsExpense = true;
 
+            //Foreachen behövd?
             foreach (var freq in Enum.GetValues<TransactionFrequency>())
             {
                 Frequencies.Add(freq);
@@ -192,7 +194,7 @@ namespace WPFBudgetPlanerare.VM
                     };
                     newTransaction = income;
                 }
-               await _transactionRepo.AddTransactionAsync(newTransaction);
+               await _reportService.SaveTransactionAsync(newTransaction);
             }
             else 
             {
@@ -210,7 +212,7 @@ namespace WPFBudgetPlanerare.VM
                     incomeToUpdate.Category = (IncomeCategory)SelectedCategory;
                 }
                 RaisePropertyChanged();
-               await _transactionRepo.UpdateTransactionASync(_transactionToEdit);
+               await _reportService.UpdateTransactionAsync(_transactionToEdit);
             }
             ClearForm(); // Anropar hjälpmetod för att rensa formuläret efter sparning
             ToDashboardCommand.Execute(null);

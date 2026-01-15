@@ -6,76 +6,106 @@
              xmlns:local="clr-namespace:WPFBudgetPlanerare"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="600">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Grid Background="{StaticResource App.Background}">
+        <Border Style="{StaticResource FormCard}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="120"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
-                   Text="Lägg till ny transaktion" 
-                   FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+                <!-- Title -->
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
+                           Text="Lägg till ny transaktion" 
+                           Style="{StaticResource SectionHeader}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Typ:" VerticalAlignment="Center" FontWeight="SemiBold"/>
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,15">
-            <RadioButton Content="Utgift" 
-                         IsChecked="{Binding IsExpense}" 
-                         GroupName="TransType" 
-                         Margin="0,0,20,0"/>
+                <!-- Type -->
+                <TextBlock Grid.Row="1" Grid.Column="0" 
+                           Text="Typ:" 
+                           Style="{StaticResource FormLabel}"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" 
+                            Orientation="Horizontal" 
+                            Margin="0,0,0,15">
+                    <RadioButton Content="Utgift" 
+                                 IsChecked="{Binding IsExpense}" 
+                                 GroupName="TransType" 
+                                 Style="{StaticResource FormRadioButton}"
+                                 Margin="0,0,20,0"/>
+                    <RadioButton Content="Inkomst" 
+                                 GroupName="TransType"
+                                 Style="{StaticResource FormRadioButton}"/>
+                </StackPanel>
 
-            <RadioButton Content="Inkomst" 
-                         GroupName="TransType"/>
-        </StackPanel>
+                <!-- Description -->
+                <TextBlock Grid.Row="2" Grid.Column="0" 
+                           Text="Beskrivning:" 
+                           Style="{StaticResource FormLabel}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" 
+                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
+                         Style="{StaticResource FormTextBox}"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Beskrivning:" VerticalAlignment="Center" FontWeight="SemiBold"/>
-        <TextBox Grid.Row="2" Grid.Column="1" 
-                 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
-                 Padding="5" Margin="0,0,0,15"/>
+                <!-- Amount -->
+                <TextBlock Grid.Row="3" Grid.Column="0" 
+                           Text="Belopp:" 
+                           Style="{StaticResource FormLabel}"/>
+                <TextBox Grid.Row="3" Grid.Column="1" 
+                         Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" 
+                         Style="{StaticResource FormTextBox}"/>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Belopp:" VerticalAlignment="Center" FontWeight="SemiBold"/>
-        <TextBox Grid.Row="3" Grid.Column="1" 
-                 Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" 
-                 Padding="5" Margin="0,0,0,15"/>
+                <!-- Category -->
+                <TextBlock Grid.Row="4" Grid.Column="0" 
+                           Text="Kategori:" 
+                           Style="{StaticResource FormLabel}"/>
+                <ComboBox Grid.Row="4" Grid.Column="1" 
+                          ItemsSource="{Binding AvailableCategories}" 
+                          SelectedItem="{Binding SelectedCategory}"
+                          Style="{StaticResource FormComboBox}"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Kategori:" VerticalAlignment="Center" FontWeight="SemiBold"/>
-        <ComboBox Grid.Row="4" Grid.Column="1" 
-                  ItemsSource="{Binding AvailableCategories}" 
-                  SelectedItem="{Binding SelectedCategory}"
-                  Padding="5" Margin="0,0,0,15"/>
+                <!-- Start Date -->
+                <TextBlock Grid.Row="5" Grid.Column="0" 
+                           Text="Datum:" 
+                           Style="{StaticResource FormLabel}"/>
+                <DatePicker Grid.Row="5" Grid.Column="1" 
+                            SelectedDate="{Binding Date}"
+                            Style="{StaticResource FormDatePicker}"/>
 
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Datum:" VerticalAlignment="Center" FontWeight="SemiBold"/>
-        <DatePicker Grid.Row="5" Grid.Column="1" 
-                    SelectedDate="{Binding Date}"
-                    Margin="0,0,0,15"/>
+                <!-- End Date -->
+                <TextBlock Grid.Row="6" Grid.Column="0" 
+                           Text="Slutdatum:" 
+                           Style="{StaticResource FormLabel}"/>
+                <DatePicker Grid.Row="6" Grid.Column="1" 
+                            SelectedDate="{Binding EndDate}"
+                            Style="{StaticResource FormDatePicker}"/>
 
-        <TextBlock Grid.Row="6" Grid.Column="0" Text="Slutdatum:" VerticalAlignment="Center" FontWeight="SemiBold"/>
-        <DatePicker Grid.Row="6" Grid.Column="1" 
-                    SelectedDate="{Binding EndDate}"
-                    Margin="0,0,0,15"/>
+                <!-- Frequency -->
+                <TextBlock Grid.Row="7" Grid.Column="0" 
+                           Text="Frekvens:" 
+                           Style="{StaticResource FormLabel}"/>
+                <ComboBox Grid.Row="7" Grid.Column="1" 
+                          ItemsSource="{Binding Frequencies}"
+                          SelectedItem="{Binding SelectedFrequency}"
+                          Style="{StaticResource FormComboBox}"
+                          Margin="0,0,0,20"/>
 
-        <TextBlock Grid.Row="7" Grid.Column="0" Text="Frekvens:" VerticalAlignment="Center" FontWeight="SemiBold"/>
-        <ComboBox Grid.Row="7" Grid.Column="1" 
-                  ItemsSource="{Binding Frequencies}"
-                  SelectedItem="{Binding SelectedFrequency}"
-                  Padding="5" Margin="0,0,0,20"/>
-
-        <Button Grid.Row="8" Grid.Column="1" 
-                Content="Spara Transaktion" 
-                Command="{Binding SaveCommand}"
-                Padding="10,5" HorizontalAlignment="Left" Width="150"
-                Background="#4CAF50" Foreground="White" FontWeight="Bold"/>
-
+                <!-- Save Button -->
+                <Button Grid.Row="8" Grid.Column="1" 
+                        Content="Spara Transaktion" 
+                        Command="{Binding SaveCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        HorizontalAlignment="Left"/>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

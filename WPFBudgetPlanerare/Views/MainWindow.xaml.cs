@@ -29,7 +29,7 @@ namespace WPFBudgetPlanerare.Views
             //var user = new User(); // Initialize with your user data
            
            
-            var reportService = new ReportService();
+            //var reportService = new ReportService();
             //var viewModel = new MainViewModel(reportService, user);
             
             //DataContext = viewModel;

@@ -5,11 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using WPFBudgetPlanerare.DTO;
 using WPFBudgetPlanerare.Models;
+using WPFBudgetPlanerare.Repositories;
 
 namespace WPFBudgetPlanerare.Services
 {
     public class ReportService : IReportService
     {
+        private readonly ITransactionRepository _transactionRepo;
+
+        public ReportService(ITransactionRepository transactionRepository)
+        {
+            _transactionRepo = transactionRepository;
+        }
+
+       
+
         public decimal GetHourlyRate(User user)
         {
             if (user.TotalWorkHours <= 0)
@@ -54,6 +64,26 @@ namespace WPFBudgetPlanerare.Services
             return user.Transactions
                 .Where(t => t.IsActiveInMonth(year, month))
                 .ToList();
+        }
+        public async Task<List<TransactionBase>> GetAllTransactionsAsync(int userId)
+        {
+            var transactions = await _transactionRepo.GetAllTransactionsAsync(userId);
+            return transactions.ToList();
+        }
+
+        public async Task SaveTransactionAsync(TransactionBase transaction)
+        {
+            await _transactionRepo.AddTransactionAsync(transaction);
+        }
+
+        public async Task UpdateTransactionAsync(TransactionBase transaction)
+        {
+            await _transactionRepo.UpdateTransactionASync(transaction);
+        }
+
+        public async Task DeleteTransactionAsync(TransactionBase transaction)
+        {
+           await _transactionRepo.RemoveTransactionAsync(transaction);
         }
     }
 }

@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Background Colors -->
+    <SolidColorBrush x:Key="App.Background" Color="#F5F3EF"/>
+    <SolidColorBrush x:Key="App.Surface" Color="White"/>
+    
+    <!-- Border Colors -->
+    <SolidColorBrush x:Key="App.Border" Color="#D9D5CF"/>
+    
+    <!-- Text Colors -->
+    <SolidColorBrush x:Key="App.Text.Primary" Color="#2F3E3C"/>
+    <SolidColorBrush x:Key="App.Text.Muted" Color="#6B7878"/>
+    
+    <!-- Accent Colors -->
+    <SolidColorBrush x:Key="App.Accent" Color="#4A6F6D"/>
+    <SolidColorBrush x:Key="App.Accent.Muted" Color="#8B9D9B"/>
+    <SolidColorBrush x:Key="App.Accent.Hover" Color="#6F827F"/>
+    
+    <!-- Danger/Error Colors -->
+    <SolidColorBrush x:Key="App.Danger" Color="#C17D6F"/>
+    <SolidColorBrush x:Key="App.Danger.Hover" Color="#A86959"/>
+    
+    <!-- Badge Colors -->
+    <SolidColorBrush x:Key="App.Badge" Color="#E8E8E4"/>
+
+</ResourceDictionary>

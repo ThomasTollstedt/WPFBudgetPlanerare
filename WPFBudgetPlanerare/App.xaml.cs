@@ -33,70 +33,51 @@ namespace WPFBudgetPlanerare
                         options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BudgetPlanerare;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False;Command Timeout=30");
                     });
 
-                    // 2. Registrera dina Repositories (Koppla Interface till Klass)
-                    // Transient = Ny instans varje gång någon ber om den
+                    // Repolager för transaktioner
                     services.AddTransient<ITransactionRepository, TransactionRepository>();
 
-                    // 3. Registrera dina Services
+                    // Servicelager för rapportering
                     services.AddTransient<IReportService, ReportService>();
-                    services.AddSingleton<Func<User, ICommand, TransactionBase?, AddTransactionViewModel>>(provider =>
-                            (user, navCommand, transaction) =>
+
+                    //User 
+                    services.AddSingleton(new User
                         {
-                         // 1. Här hämtar fabriken Repot från containern (som MainViewModel inte visste om)
-                         var repo = provider.GetRequiredService<ITransactionRepository>();
-
-                            // 2. Här bygger fabriken bilen. 
-                            // Hur ser koden ut för att returnera din ViewModel här?
-                            return new AddTransactionViewModel(repo, user, navCommand, transaction);
-                            
-                           
-                        });
-
-                    services.AddSingleton<Func<User, ICommand, DashboardViewModel>>(provider =>
-                            (user, navCommand ) =>
-                            {
-                                // 1. Här hämtar fabriken Repot från containern (som MainViewModel inte visste om)
-                                var repo = provider.GetRequiredService<ITransactionRepository>();
-
-                                // 2. Här bygger fabriken bilen. 
-                                // Hur ser koden ut för att returnera din ViewModel här?
-                                return new DashboardViewModel(repo, user, navCommand);
-
-
-                            });
-
-                    services.AddSingleton<Func<User, IReportService, ForecastViewModel>>(provider =>
-                           (user, reportService) =>
-                           {
-                               // 1. Här hämtar fabriken Repot från containern (som MainViewModel inte visste om)
-                               var repo = provider.GetRequiredService<ITransactionRepository>();
-
-                               // 2. Här bygger fabriken bilen. 
-                               // Hur ser koden ut för att returnera din ViewModel här?
-                               return new ForecastViewModel(repo, user, reportService);
-
-
-                           });
-
-                    var dummyUser = new User
-                    {
                         Id = 1,
                         UserName = "Admin",
                         AnnualIncome = 550000m,
-                        TotalWorkHours = 1980m
+                        TotalWorkHours = 1920 
+                    });
 
-                        // Eller vilka properties din User-klass nu har
-                    };
+                    //Factory for AddTransactionVM
+                    services.AddSingleton<Func<User, ICommand, TransactionBase?, AddTransactionViewModel>>(provider =>
+                            (user, navCommand, transaction) =>
+                        {
+                            var reportService = provider.GetRequiredService<IReportService>();
+                            return new AddTransactionViewModel(reportService, user, navCommand, transaction);
+                        });
 
-                    // 4. Registrera ViewModels & Views
-                    services.AddSingleton(dummyUser);
+                    //Factory DashboardVM
+                    services.AddSingleton<Func<User, ICommand, DashboardViewModel>>(provider =>
+                            (user, navCommand ) =>
+                            {
+                                 var reportService = provider.GetRequiredService<IReportService>();
+                                return new DashboardViewModel(reportService, user, navCommand);
+                            });
+
+
+                    //Factory for ForecastVM
+                    services.AddSingleton<Func<User, IReportService, ForecastViewModel>>(provider =>
+                           (user, reportService) =>
+                           {
+                               return new ForecastViewModel(user, reportService);
+                           });
+
                     services.AddSingleton<MainViewModel>();
-                    services.AddSingleton<MainWindow>();
-                    //services.AddSingleton<DashboardViewModel>();
-                    services.AddSingleton<DashboardView>();
-                    //services.AddSingleton<ForecastViewModel>();
-                    services.AddSingleton<ForecastView>();
-                    //services.AddSingleton<AddTransactionViewModel>();
+                    
+                    
+                    services.AddSingleton<MainWindow>();     
+                    services.AddSingleton<DashboardView>();             
+                    services.AddSingleton<ForecastView>();                 
                     services.AddSingleton<AddTransactionView>();
                 })
                 .Build();
@@ -109,10 +90,8 @@ namespace WPFBudgetPlanerare
 
             await AppHost!.StartAsync();
 
-            // Hämta MainWindow från DI-containern så att alla beroenden följer med!
+          
             var startupForm = AppHost.Services.GetRequiredService<MainWindow>();
-
-            // Hämta ViewModel och sätt som DataContext
             startupForm.DataContext = AppHost.Services.GetRequiredService<MainViewModel>();
 
             startupForm.Show();

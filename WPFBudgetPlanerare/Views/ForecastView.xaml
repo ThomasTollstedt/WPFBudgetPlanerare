@@ -4,77 +4,131 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WPFBudgetPlanerare"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid Background="{StaticResource App.Background}">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Månadsprognos" FontSize="24" FontWeight="Bold" Foreground="#333"/>
-            <TextBlock Text="Se hur din ekonomi ser ut framöver." Foreground="Gray" Margin="0,5,0,15"/>
+            <!-- Header Section -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock Text="Månadsprognos" 
+                           Style="{StaticResource PageTitle}"/>
+                <TextBlock Text="Se hur din ekonomi ser ut framöver." 
+                           Style="{StaticResource SubtitleText}"/>
 
-            <StackPanel Orientation="Horizontal">
-                <StackPanel Margin="0,0,20,0">
-                    <TextBlock Text="Årtal" FontWeight="SemiBold"/>
-                    <TextBox Text="{Binding SelectedYear, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="80" Padding="5"/>
-                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="0,0,20,0">
+                        <TextBlock Text="Årtal" 
+                                   Style="{StaticResource FormLabel}"
+                                   Margin="0,0,0,5"/>
+                        <xctk:IntegerUpDown Value="{Binding SelectedYear, UpdateSourceTrigger=PropertyChanged}" 
+                                            Width="100" 
+                                            Minimum="2000"
+                                            Maximum="2100"
+                                            Increment="1"
+                                            Margin="0,0,0,15"/>
+                    </StackPanel>
 
-                <StackPanel>
-                    <TextBlock Text="Månad (1-12)" FontWeight="SemiBold"/>
-                    <TextBox Text="{Binding SelectedMonth, UpdateSourceTrigger=PropertyChanged}" 
-                             Width="80" Padding="5"/>
+                    <StackPanel>
+                        <TextBlock Text="Månad (1-12)" 
+                                   Style="{StaticResource FormLabel}"
+                                   Margin="0,0,0,5"/>
+                        <xctk:IntegerUpDown Value="{Binding SelectedMonth, UpdateSourceTrigger=PropertyChanged}" 
+                                            Width="100" 
+                                            Minimum="1"
+                                            Maximum="12"
+                                            Increment="1"
+                                            Margin="0,0,0,15"/>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
-        </StackPanel>
 
-        <Grid Grid.Row="1" Margin="0,0,0,20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <!-- Summary Cards -->
+            <Grid Grid.Row="1" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Background="#E8F5E9" CornerRadius="8" Padding="15" Margin="0,0,10,0">
-                <StackPanel>
-                    <TextBlock Text="Inkomst" Foreground="#2E7D32" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding PredictedIncome, StringFormat='{}{0:N0} kr'}" 
-                               FontSize="20" FontWeight="Bold" Foreground="#1B5E20"/>
-                </StackPanel>
-            </Border>
+                <!-- Income Card -->
+                <Border Grid.Column="0" 
+                        Style="{StaticResource SummaryCard}"
+                        Background="#E8F5E9"
+                        Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Inkomst" 
+                                   Style="{StaticResource SummaryLabel}"
+                                   Foreground="#2E7D32"/>
+                        <TextBlock Text="{Binding PredictedIncome, StringFormat='{}{0:N0} kr'}" 
+                                   Style="{StaticResource SummaryValueLarge}"
+                                   Foreground="#1B5E20"/>
+                    </StackPanel>
+                </Border>
 
-            <Border Grid.Column="1" Background="#FFEBEE" CornerRadius="8" Padding="15" Margin="5,0,5,0">
-                <StackPanel>
-                    <TextBlock Text="Utgifter" Foreground="#C62828" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding PredictedExpenses, StringFormat='{}{0:N0} kr'}" 
-                               FontSize="20" FontWeight="Bold" Foreground="#B71C1C"/>
-                </StackPanel>
-            </Border>
+                <!-- Expenses Card -->
+                <Border Grid.Column="1" 
+                        Style="{StaticResource SummaryCard}"
+                        Background="#FFEBEE"
+                        Margin="5,0,5,0">
+                    <StackPanel>
+                        <TextBlock Text="Utgifter" 
+                                   Style="{StaticResource SummaryLabel}"
+                                   Foreground="#C62828"/>
+                        <TextBlock Text="{Binding PredictedExpenses, StringFormat='{}{0:N0} kr'}" 
+                                   Style="{StaticResource SummaryValueLarge}"
+                                   Foreground="#B71C1C"/>
+                    </StackPanel>
+                </Border>
 
-            <Border Grid.Column="2" Background="#E3F2FD" CornerRadius="8" Padding="15" Margin="10,0,0,0">
-                <StackPanel>
-                    <TextBlock Text="Resultat" Foreground="#1565C0" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding PredictedBalance, StringFormat='{}{0:N0} kr'}" 
-                               FontSize="20" FontWeight="Bold" Foreground="#0D47A1"/>
-                </StackPanel>
-            </Border>
+                <!-- Balance Card -->
+                <Border Grid.Column="2" 
+                        Style="{StaticResource SummaryCard}"
+                        Background="#E3F2FD"
+                        Margin="10,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Resultat" 
+                                   Style="{StaticResource SummaryLabel}"
+                                   Foreground="#1565C0"/>
+                        <TextBlock Text="{Binding PredictedBalance, StringFormat='{}{0:N0} kr'}" 
+                                   Style="{StaticResource SummaryValueLarge}"
+                                   Foreground="#0D47A1"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Transactions List -->
+            <GroupBox Grid.Row="2" 
+                      Header="Transaktioner denna månad"
+                      BorderBrush="{StaticResource App.Border}"
+                      Foreground="{StaticResource App.Text.Primary}">
+                <ListView ItemsSource="{Binding ForecastTransactions}" 
+                          BorderThickness="0"
+                          Background="Transparent">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Inlagt datum" 
+                                            DisplayMemberBinding="{Binding StartDate, StringFormat=yyyy-MM-dd}" 
+                                            Width="100"/>
+                            <GridViewColumn Header="Beskrivning" 
+                                            DisplayMemberBinding="{Binding Description}" 
+                                            Width="200"/>
+                            <GridViewColumn Header="Kategori" 
+                                            DisplayMemberBinding="{Binding CategoryDisplayName}" 
+                                            Width="120"/>
+                            <GridViewColumn Header="Belopp" 
+                                            DisplayMemberBinding="{Binding Amount, StringFormat='{}{0:N2} kr'}" 
+                                            Width="100"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </GroupBox>
         </Grid>
-
-        <GroupBox Grid.Row="2" Header="Transaktioner denna månad">
-            <ListView ItemsSource="{Binding ForecastTransactions}" BorderThickness="0">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Inlagt datum" DisplayMemberBinding="{Binding StartDate, StringFormat=yyyy-MM-dd}" Width="100"/>
-                        <GridViewColumn Header="Beskrivning" DisplayMemberBinding="{Binding Description}" Width="200"/>
-                        <GridViewColumn Header="Kategori" DisplayMemberBinding="{Binding CategoryDisplayName}" Width="120"/>
-                        <GridViewColumn Header="Belopp" DisplayMemberBinding="{Binding Amount, StringFormat='{}{0:N2} kr'}" Width="100"/>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </GroupBox>
     </Grid>
 </UserControl>

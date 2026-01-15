@@ -15,13 +15,13 @@ namespace WPFBudgetPlanerare.VM
 {
     public class ForecastViewModel : ViewModelBase
     {
-        private readonly ITransactionRepository _transactionRepo;
+        //private readonly ITransactionRepository _transactionRepo;
         private readonly User _user;
         private readonly IReportService _reportService;
 
-        public ForecastViewModel(ITransactionRepository transactionRepository, User user, IReportService reportService)
+        public ForecastViewModel(/*ITransactionRepository transactionRepository,*/ User user, IReportService reportService)
         {
-            _transactionRepo = transactionRepository;
+            //_transactionRepo = transactionRepository;
             _user = user;
             _reportService = reportService;
 
@@ -65,7 +65,7 @@ namespace WPFBudgetPlanerare.VM
             set { predictedIncome = value; RaisePropertyChanged(); }
         }
 
-        private decimal predictedExpenses   ;
+        private decimal predictedExpenses;
 
         public decimal PredictedExpenses
         {
@@ -88,13 +88,13 @@ namespace WPFBudgetPlanerare.VM
 
         public string Title => "Månadsprognos";
 
-      
+
         private void UpdateForecast()
         {
             PredictedIncome = _reportService.GetTotalIncomeForMonth(_user, SelectedYear, SelectedMonth);
             PredictedExpenses = _reportService.GetTotalExpensesForMonth(_user, SelectedYear, SelectedMonth);
-        
-                //räkna ut balans
+
+            //räkna ut balans
             PredictedBalance = PredictedIncome - PredictedExpenses;
 
             UpdateTransactionList();
@@ -106,30 +106,24 @@ namespace WPFBudgetPlanerare.VM
             ForecastTransactions.Clear();
 
             var filteredTransactions = _allTransactions
-                .Where(t => t.StartDate.Year == SelectedYear && t.StartDate.Month == SelectedMonth)
+                .Where(t => t.IsActiveInMonth(SelectedYear, SelectedMonth))
                 .ToList();
-                
-                //_reportService.GetTransactionsForMonth(_user, SelectedYear, SelectedMonth);
+
 
             foreach (var t in filteredTransactions)
             {
                 ForecastTransactions.Add(t);
             }
-
         }
-
-        
 
         private async void LoadTransactions()
         {
-            var result = await _transactionRepo.GetAllTransactionsAsync(_user.Id);
+            var result = await _reportService.GetAllTransactionsAsync(_user.Id);
             _allTransactions = result.ToList();
-
             _user.Transactions = _allTransactions;
 
             UpdateForecast();
 
-            
         }
 
     }

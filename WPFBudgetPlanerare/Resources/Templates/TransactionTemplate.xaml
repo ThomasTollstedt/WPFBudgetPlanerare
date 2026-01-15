@@ -1,0 +1,94 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Transaction Item DataTemplate -->
+    <DataTemplate x:Key="TransactionItemTemplate">
+        <Border Style="{StaticResource TransactionCard}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Category with Accent Line -->
+                <Border Grid.Row="0" Grid.Column="0" 
+                        BorderBrush="{StaticResource App.Accent}" 
+                        BorderThickness="0,0,0,2" 
+                        Padding="0,0,0,8"
+                        Margin="0,0,0,8">
+                    <TextBlock Text="{Binding CategoryDisplayName}" 
+                               Style="{StaticResource CategoryText}"/>
+                </Border>
+
+                <!-- Amount -->
+                <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                        Style="{StaticResource AmountBadge}">
+                    <TextBlock Text="{Binding Amount, StringFormat='{}{0:N2} kr'}" 
+                               Style="{StaticResource AmountText}"/>
+                </Border>
+
+                <!-- Description -->
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
+                           Text="{Binding Description}" 
+                           Style="{StaticResource DescriptionText}"/>
+
+                <!-- Date Range -->
+                <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                            Orientation="Horizontal" 
+                            Margin="0,0,0,12">
+                    <Border Style="{StaticResource DateBadge}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Start: " 
+                                       Style="{StaticResource DateLabelText}"/>
+                            <TextBlock Text="{Binding StartDate, StringFormat='{}{0:yyyy-MM-dd}'}" 
+                                       Style="{StaticResource DateValueText}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource DateBadge}" 
+                            Margin="10,0,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Slut: " 
+                                       Style="{StaticResource DateLabelText}"/>
+                            <TextBlock Text="{Binding EndDate, StringFormat='{}{0:yyyy-MM-dd}'}" 
+                                       Style="{StaticResource DateValueText}"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Frequency Badge -->
+                <Border Grid.Row="3" Grid.Column="0"
+                        Style="{StaticResource InfoBadge}">
+                    <TextBlock Text="{Binding Frequency}" 
+                               Style="{StaticResource BadgeText}"/>
+                </Border>
+
+                <!-- Button Container -->
+                <StackPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <!-- Edit Button -->
+                    <Button Content="Redigera" 
+                            Command="{Binding DataContext.EditTransactionCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource AccentButton}"
+                            Margin="0,0,10,0"/>
+
+                    <!-- Delete Button -->
+                    <Button Content="Ta bort" 
+                            Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource DangerButton}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+</ResourceDictionary>
