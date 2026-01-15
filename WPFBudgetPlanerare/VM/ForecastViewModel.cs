@@ -1,20 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WPFBudgetPlanerare.Models;
-using WPFBudgetPlanerare.Services;
-using WPFBudgetPlanerare.Command;
-using System.Collections.ObjectModel;
 using System.Transactions;
+using WPFBudgetPlanerare.Command;
+using WPFBudgetPlanerare.Models;
+using WPFBudgetPlanerare.Repositories;
+using WPFBudgetPlanerare.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WPFBudgetPlanerare.VM
 {
     public class ForecastViewModel : ViewModelBase
     {
+        private readonly ITransactionRepository _transactionRepo;
         private readonly User _user;
-        private readonly ReportService _reportService;
+        private readonly IReportService _reportService;
+
+        public ForecastViewModel(ITransactionRepository transactionRepository, User user, IReportService reportService)
+        {
+            _transactionRepo = transactionRepository;
+            _user = user;
+            _reportService = reportService;
+
+            selectedYear = DateTime.Now.Year;
+            selectedMonth = DateTime.Now.Month;
+
+            UpdateForecast();
+            LoadTransactions();
+        }
+
 
         private int selectedYear;
 
@@ -65,22 +82,13 @@ namespace WPFBudgetPlanerare.VM
         }
 
         //Lista på vilka poster som påverkar denna månads prognos
+        private List<TransactionBase> _allTransactions = new List<TransactionBase>();
         public ObservableCollection<TransactionBase> ForecastTransactions { get; set; } = new ObservableCollection<TransactionBase>();
 
 
         public string Title => "Månadsprognos";
 
-        public ForecastViewModel(User user, ReportService reportService)
-        {
-            _user = user;
-            _reportService = reportService;
-
-            selectedYear = DateTime.Now.Year;
-            selectedMonth = DateTime.Now.Month;
-
-            UpdateForecast();
-        }
-
+      
         private void UpdateForecast()
         {
             PredictedIncome = _reportService.GetTotalIncomeForMonth(_user, SelectedYear, SelectedMonth);
@@ -97,15 +105,32 @@ namespace WPFBudgetPlanerare.VM
         {
             ForecastTransactions.Clear();
 
-            var transactions = _reportService.GetTransactionsForMonth(_user, SelectedYear, SelectedMonth);
+            var filteredTransactions = _allTransactions
+                .Where(t => t.StartDate.Year == SelectedYear && t.StartDate.Month == SelectedMonth)
+                .ToList();
+                
+                //_reportService.GetTransactionsForMonth(_user, SelectedYear, SelectedMonth);
 
-            foreach (var t in transactions)
+            foreach (var t in filteredTransactions)
             {
                 ForecastTransactions.Add(t);
             }
 
         }
 
-       
+        
+
+        private async void LoadTransactions()
+        {
+            var result = await _transactionRepo.GetAllTransactionsAsync(_user.Id);
+            _allTransactions = result.ToList();
+
+            _user.Transactions = _allTransactions;
+
+            UpdateForecast();
+
+            
+        }
+
     }
 }

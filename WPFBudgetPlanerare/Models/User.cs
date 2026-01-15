@@ -14,7 +14,7 @@ namespace WPFBudgetPlanerare.Models
 
         public decimal AnnualIncome { get; set; }
         public decimal TotalWorkHours { get; set; }
-        public List<TransactionBase> Transactions { get; set; } = new List<TransactionBase>();
+        public virtual List<TransactionBase> Transactions { get; set; } = new List<TransactionBase>(); // Virtual för lazy loading och slippa .Include vid hämtning från DB nu vid mindre projekt.
 
 
     }

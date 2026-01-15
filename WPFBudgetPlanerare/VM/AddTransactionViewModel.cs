@@ -9,16 +9,19 @@ using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using WPFBudgetPlanerare.Command;
 using WPFBudgetPlanerare.Models;
+using WPFBudgetPlanerare.Repositories;
 
 namespace WPFBudgetPlanerare.VM
 {
     public class AddTransactionViewModel : ViewModelBase
     {
+        private readonly ITransactionRepository _transactionRepo;
         private readonly User _user;
         private readonly TransactionBase? _transactionToEdit;
 
-        public AddTransactionViewModel(User user, ICommand toDashboardCommand, TransactionBase? transactionToEdit = null)
+        public AddTransactionViewModel(ITransactionRepository transactionRepo,User user, ICommand toDashboardCommand, TransactionBase? transactionToEdit = null)
         {
+            _transactionRepo = transactionRepo;
             _user = user;
             _transactionToEdit = transactionToEdit;
             ToDashboardCommand = toDashboardCommand;
@@ -49,10 +52,7 @@ namespace WPFBudgetPlanerare.VM
                 }
 
                 SelectedFrequency = transactionToEdit.Frequency;
-
             }
-
-
             SaveCommand = new RelayCommand(o => SaveTransaction());
         }
 
@@ -75,8 +75,6 @@ namespace WPFBudgetPlanerare.VM
                 }
             }
         }
-
-
 
         public ObservableCollection<object> AvailableCategories { get; set; } = new ObservableCollection<object>();
 
@@ -157,7 +155,7 @@ namespace WPFBudgetPlanerare.VM
             set { _selectedFrequency = value; RaisePropertyChanged(); }
 
         }
-        private void SaveTransaction()
+        private async void SaveTransaction()
         {
             if (Amount <= 0 || string.IsNullOrWhiteSpace(Description))
                 return;
@@ -170,6 +168,7 @@ namespace WPFBudgetPlanerare.VM
                 {
                     var expense = new Expense
                     {
+                        UserId = _user.Id,
                         Amount = Amount,
                         Description = Description,
                         StartDate = DateOnly.FromDateTime(Date),
@@ -184,6 +183,7 @@ namespace WPFBudgetPlanerare.VM
                 {
                     var income = new Income
                     {
+                        UserId =  _user.Id,
                         Amount = Amount,
                         Description = Description,
                         StartDate = DateOnly.FromDateTime(Date),
@@ -192,9 +192,9 @@ namespace WPFBudgetPlanerare.VM
                     };
                     newTransaction = income;
                 }
-                _user.Transactions.Add(newTransaction);
+               await _transactionRepo.AddTransactionAsync(newTransaction);
             }
-            else // Redigera befintlig transaktion, referens så ändras direkt.
+            else 
             {
                 _transactionToEdit.Amount = Amount;
                 _transactionToEdit.Description = Description;
@@ -210,6 +210,7 @@ namespace WPFBudgetPlanerare.VM
                     incomeToUpdate.Category = (IncomeCategory)SelectedCategory;
                 }
                 RaisePropertyChanged();
+               await _transactionRepo.UpdateTransactionASync(_transactionToEdit);
             }
             ClearForm(); // Anropar hjälpmetod för att rensa formuläret efter sparning
             ToDashboardCommand.Execute(null);

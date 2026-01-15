@@ -9,6 +9,7 @@ using WPFBudgetPlanerare.Models;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
+using WPFBudgetPlanerare.Repositories;
 
 namespace WPFBudgetPlanerare.VM
 {
@@ -16,22 +17,34 @@ namespace WPFBudgetPlanerare.VM
     public class DashboardViewModel : ViewModelBase
     {
         private readonly User _user;
+        private readonly ITransactionRepository _transactionRepo;
 
-
-        public DashboardViewModel(User user, ICommand editCommand)
+        public DashboardViewModel(ITransactionRepository transactionRepo, User user, ICommand editCommand)
         {
             _user = user;
+            _transactionRepo = transactionRepo;
             EditTransactionCommand = editCommand;
 
-            var transactions = _user.Transactions
-            .OrderByDescending(t => t.StartDate)
-            .ToList();
+          
+           
 
-            Transactions = new ObservableCollection<TransactionBase>(transactions);
+            Transactions = new ObservableCollection<TransactionBase>();
             DeleteCommand = new RelayCommand<TransactionBase>(t => DeleteTransaction(t));
             FilterCommand = new RelayCommand<object>(t => FilterTransaction(t));
+
+            LoadTransactions();
         }
 
+        private async void LoadTransactions()
+        {
+            var result = await _transactionRepo.GetAllTransactionsAsync(_user.Id);
+
+            Transactions.Clear();
+            foreach (var item in result)
+            {
+                Transactions.Add(item);
+            };
+        }
 
         public ICommand EditTransactionCommand { get; }
         public RelayCommand<TransactionBase> DeleteCommand { get; }

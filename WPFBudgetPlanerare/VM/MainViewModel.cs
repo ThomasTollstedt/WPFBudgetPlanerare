@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using System.Windows.Input;
 using WPFBudgetPlanerare.Command;
 using WPFBudgetPlanerare.Models;
 using WPFBudgetPlanerare.Services;
@@ -13,7 +14,10 @@ namespace WPFBudgetPlanerare.VM
 {
     public class MainViewModel : ViewModelBase
     {
-        private readonly ReportService _reportService;
+        private readonly Func<User, ICommand, TransactionBase?, AddTransactionViewModel> _addTransactionFactory;
+        private readonly Func<User, ICommand, DashboardViewModel> _dashboardFactory;
+        private readonly Func<User, IReportService, ForecastViewModel> _forecastFactory;
+        private readonly IReportService _reportService;
         private readonly User _user;
 
         private ViewModelBase _currentViewModel;
@@ -28,30 +32,37 @@ namespace WPFBudgetPlanerare.VM
         public RelayCommand NavigateToForecastCommand { get; set; }
         public RelayCommand NavigateToAddTransactionCommand { get; set; }
 
-        public MainViewModel(ReportService reportService, User user)
+        public MainViewModel(
+            Func<User, ICommand, TransactionBase?, AddTransactionViewModel> addTransactionFactory,
+            Func<User, ICommand, DashboardViewModel> dashboardFactory,
+            Func<User, IReportService, ForecastViewModel> forecastFactory
+            , IReportService reportService, User user)
         {
+            _addTransactionFactory = addTransactionFactory;
+            _dashboardFactory = dashboardFactory;
+            _forecastFactory = forecastFactory;
             _reportService = reportService;
             _user = user;
 
-            
-            
+
+
             NavigateToAddTransactionCommand = new RelayCommand(o =>
             {
                 if (o is TransactionBase transactionToEdit)
                 {
-                    CurrentViewModel = new AddTransactionViewModel(_user, NavigateToDashboardCommand, transactionToEdit);
+                    CurrentViewModel = _addTransactionFactory(_user, NavigateToDashboardCommand, transactionToEdit);
                 }
                 else
                 {
-                    CurrentViewModel = new AddTransactionViewModel(_user, NavigateToDashboardCommand);
+                    CurrentViewModel = _addTransactionFactory(_user, NavigateToDashboardCommand, null);
 
                 }
             });
 
-            NavigateToDashboardCommand = new RelayCommand(o => { CurrentViewModel = new DashboardViewModel(_user, NavigateToAddTransactionCommand); });
-            NavigateToForecastCommand = new RelayCommand(o => { CurrentViewModel = new ForecastViewModel(_user, _reportService); });
+            NavigateToDashboardCommand = new RelayCommand(o => { CurrentViewModel = _dashboardFactory(_user, NavigateToAddTransactionCommand); });
+            NavigateToForecastCommand = new RelayCommand(o => { CurrentViewModel = _forecastFactory(_user, _reportService); });
 
-            CurrentViewModel = new DashboardViewModel(_user, NavigateToAddTransactionCommand); // Sätter start-vyn
+            CurrentViewModel = _dashboardFactory(_user, NavigateToAddTransactionCommand); // Sätter start-vyn
         }
 
     }

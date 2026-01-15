@@ -96,6 +96,11 @@ namespace WPFBudgetPlanerare.Models
 
         public abstract string CategoryDisplayName { get; }
 
+        public int UserId { get; set; }
+        public virtual User User { get; set; }
+
+
+
         public bool IsActiveInMonth(int year, int month)
         {
             DateOnly targetPeriod = new DateOnly(year, month, 1);
