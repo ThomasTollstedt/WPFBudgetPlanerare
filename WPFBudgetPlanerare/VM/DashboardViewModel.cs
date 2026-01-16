@@ -20,17 +20,25 @@ namespace WPFBudgetPlanerare.VM
         private readonly User _user;
         private readonly IReportService _reportService;
 
-        //private readonly ITransactionRepository _transactionRepo;
+        private decimal _monthlyIncome;
+        public decimal MonthlyIncome
+        {
+            get => _monthlyIncome;
+            private set { if (_monthlyIncome != value) { _monthlyIncome = value; RaisePropertyChanged(); } }
+        }
+        
+        private decimal _annualIncome;
+        public decimal AnnualIncome
+        {
+            get => _annualIncome;
+            private set { if (_annualIncome != value) { _annualIncome = value; RaisePropertyChanged(); } }
+        }
 
         public DashboardViewModel(/*ITransactionRepository transactionRepo,*/ IReportService reportService, User user, ICommand editCommand)
         {
             _user = user;
             _reportService = reportService;
-            //_transactionRepo = transactionRepo;
             EditTransactionCommand = editCommand;
-
-
-
 
             Transactions = new ObservableCollection<TransactionBase>();
             DeleteCommand = new RelayCommand<TransactionBase>(t => DeleteTransaction(t));
@@ -48,7 +56,8 @@ namespace WPFBudgetPlanerare.VM
             {
                 Transactions.Add(item);
             }
-            ;
+            _user.Transactions = result.ToList(); // keep user cache in sync
+            RecalculateIncome();
         }
 
         public ICommand EditTransactionCommand { get; }
@@ -70,20 +79,19 @@ namespace WPFBudgetPlanerare.VM
 
         public string UserName => _user.UserName;
 
-
-        public decimal AnnualIncome
-        {
-            get
-            {
-                return _user.AnnualIncome;
-            }
-        }
-
         private async Task DeleteTransaction(TransactionBase transaction)
         {
             _user.Transactions.Remove(transaction);
             Transactions.Remove(transaction);
             await _reportService.DeleteTransactionAsync(transaction);
+            RecalculateIncome();
+        }
+
+        private void RecalculateIncome()
+        {
+            var now = DateTime.Now;
+            MonthlyIncome = _reportService.GetTotalIncomeForMonth(_user, now.Year, now.Month);
+            AnnualIncome  = MonthlyIncome * 12;
         }
 
         public void FilterTransaction(object t)

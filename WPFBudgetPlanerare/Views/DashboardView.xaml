@@ -23,9 +23,15 @@
                     <Run Text="{Binding UserName, Mode=OneWay}"/>
                 </TextBlock>
                 <TextBlock Style="{StaticResource HeaderInfoText}">
+                    <Run Text="Månadsinkomst: "/>
+                    <!--<Run Text="{Binding MonthlyBalance, Mode=OneWay, StringFormat='{}{0:N0} kr'}" FontWeight="SemiBold"/>-->
+                    <Run Text="{Binding MonthlyIncome, Mode=OneWay, StringFormat='{}{0:N0} kr'}" FontWeight="SemiBold"/>
+                </TextBlock>
+                <TextBlock Style="{StaticResource HeaderInfoText}">
                     <Run Text="Årsinkomst: "/>
                     <Run Text="{Binding AnnualIncome, Mode=OneWay, StringFormat='{}{0:N0} kr'}" FontWeight="SemiBold"/>
                 </TextBlock>
+                
             </StackPanel>
         </Border>
         

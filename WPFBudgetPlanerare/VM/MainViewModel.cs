@@ -16,8 +16,7 @@ namespace WPFBudgetPlanerare.VM
     {
         private readonly Func<User, ICommand, TransactionBase?, AddTransactionViewModel> _addTransactionFactory;
         private readonly Func<User, ICommand, DashboardViewModel> _dashboardFactory;
-        private readonly Func<User, IReportService, ForecastViewModel> _forecastFactory;
-        private readonly IReportService _reportService;
+        private readonly Func<User, ForecastViewModel> _forecastFactory;
         private readonly User _user;
 
         private ViewModelBase _currentViewModel;
@@ -35,13 +34,12 @@ namespace WPFBudgetPlanerare.VM
         public MainViewModel(
             Func<User, ICommand, TransactionBase?, AddTransactionViewModel> addTransactionFactory,
             Func<User, ICommand, DashboardViewModel> dashboardFactory,
-            Func<User, IReportService, ForecastViewModel> forecastFactory
-            , IReportService reportService, User user)
+            Func<User, ForecastViewModel> forecastFactory,
+            User user)
         {
             _addTransactionFactory = addTransactionFactory;
             _dashboardFactory = dashboardFactory;
             _forecastFactory = forecastFactory;
-            _reportService = reportService;
             _user = user;
 
 
@@ -60,7 +58,7 @@ namespace WPFBudgetPlanerare.VM
             });
 
             NavigateToDashboardCommand = new RelayCommand(o => { CurrentViewModel = _dashboardFactory(_user, NavigateToAddTransactionCommand); });
-            NavigateToForecastCommand = new RelayCommand(o => { CurrentViewModel = _forecastFactory(_user, _reportService); });
+            NavigateToForecastCommand = new RelayCommand(o => { CurrentViewModel = _forecastFactory(_user/*, _reportService*/); });
 
             CurrentViewModel = _dashboardFactory(_user, NavigateToAddTransactionCommand); // Sätter start-vyn
         }

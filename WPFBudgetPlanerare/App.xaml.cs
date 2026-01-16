@@ -66,9 +66,10 @@ namespace WPFBudgetPlanerare
 
 
                     //Factory for ForecastVM
-                    services.AddSingleton<Func<User, IReportService, ForecastViewModel>>(provider =>
-                           (user, reportService) =>
+                    services.AddSingleton<Func<User, ForecastViewModel>>(provider =>
+                           user =>
                            {
+                               var reportService = provider.GetRequiredService<IReportService>();
                                return new ForecastViewModel(user, reportService);
                            });
 
