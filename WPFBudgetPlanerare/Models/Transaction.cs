@@ -19,21 +19,8 @@ namespace WPFBudgetPlanerare.Models
 
     {
 
-        private TEnum _category;
-        public TEnum Category
-        {
+        public TEnum Category { get; set; }
 
-            get { return _category; }
-
-            set
-            {
-                if (!_category.Equals(value))
-                {
-                    _category = value; RaisePropertyChanged();
-                }
-            }
-
-        }
 
     }
 }

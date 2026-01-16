@@ -39,13 +39,13 @@ namespace WPFBudgetPlanerare
                     // Servicelager för rapportering
                     services.AddTransient<IReportService, ReportService>();
 
-                    //User 
+                    //User login mockup/placeholder
                     services.AddSingleton(new User
-                        {
+                    {
                         Id = 1,
                         UserName = "Admin",
                         AnnualIncome = 550000m,
-                        TotalWorkHours = 1920 
+                        TotalWorkHours = 1920
                     });
 
                     //Factory for AddTransactionVM
@@ -58,9 +58,9 @@ namespace WPFBudgetPlanerare
 
                     //Factory DashboardVM
                     services.AddSingleton<Func<User, ICommand, DashboardViewModel>>(provider =>
-                            (user, navCommand ) =>
+                            (user, navCommand) =>
                             {
-                                 var reportService = provider.GetRequiredService<IReportService>();
+                                var reportService = provider.GetRequiredService<IReportService>();
                                 return new DashboardViewModel(reportService, user, navCommand);
                             });
 
@@ -73,11 +73,11 @@ namespace WPFBudgetPlanerare
                            });
 
                     services.AddSingleton<MainViewModel>();
-                    
-                    
-                    services.AddSingleton<MainWindow>();     
-                    services.AddSingleton<DashboardView>();             
-                    services.AddSingleton<ForecastView>();                 
+
+
+                    services.AddSingleton<MainWindow>();
+                    services.AddSingleton<DashboardView>();
+                    services.AddSingleton<ForecastView>();
                     services.AddSingleton<AddTransactionView>();
                 })
                 .Build();
@@ -90,7 +90,7 @@ namespace WPFBudgetPlanerare
 
             await AppHost!.StartAsync();
 
-          
+
             var startupForm = AppHost.Services.GetRequiredService<MainWindow>();
             startupForm.DataContext = AppHost.Services.GetRequiredService<MainViewModel>();
 
