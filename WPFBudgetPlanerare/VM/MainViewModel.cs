@@ -31,6 +31,8 @@ namespace WPFBudgetPlanerare.VM
         public RelayCommand NavigateToForecastCommand { get; set; }
         public RelayCommand NavigateToAddTransactionCommand { get; set; }
 
+        // Konstruktor med fabriksmetoder för att skapa vy-modeller, detta pga lifetimes i DI-containern. 
+        // Vill skapa en ny fräsch VM varje gång vi navigerar eller CRUD:ar transaktioner.
         public MainViewModel(
             Func<User, ICommand, TransactionBase?, AddTransactionViewModel> addTransactionFactory,
             Func<User, ICommand, DashboardViewModel> dashboardFactory,

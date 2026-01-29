@@ -15,13 +15,13 @@ namespace WPFBudgetPlanerare.VM
 {
     public class ForecastViewModel : ViewModelBase
     {
-        //private readonly ITransactionRepository _transactionRepo;
+       
         private readonly User _user;
         private readonly IReportService _reportService;
 
-        public ForecastViewModel(/*ITransactionRepository transactionRepository,*/ User user, IReportService reportService)
+        public ForecastViewModel(User user, IReportService reportService)
         {
-            //_transactionRepo = transactionRepository;
+           
             _user = user;
             _reportService = reportService;
 

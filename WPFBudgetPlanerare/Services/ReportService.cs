@@ -18,8 +18,6 @@ namespace WPFBudgetPlanerare.Services
             _transactionRepo = transactionRepository;
         }
 
-       
-
         public decimal GetHourlyRate(User user)
         {
             if (user.TotalWorkHours <= 0)

@@ -48,7 +48,11 @@ namespace WPFBudgetPlanerare
                         TotalWorkHours = 1920
                     });
 
+                    //Factories för ViewModels för att kunna skapa en ny ViewModel vid varje navigering/CRUD-operation.
+
+
                     //Factory for AddTransactionVM
+
                     services.AddSingleton<Func<User, ICommand, TransactionBase?, AddTransactionViewModel>>(provider =>
                             (user, navCommand, transaction) =>
                         {

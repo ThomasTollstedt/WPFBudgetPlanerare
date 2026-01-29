@@ -146,7 +146,7 @@ namespace WPFBudgetPlanerare.VM
         }
 
 
-        //Frekvens (månatlig, årlig).
+        //Transaktionsfrekvenser
         public ObservableCollection<TransactionFrequency> Frequencies { get; } = new ObservableCollection<TransactionFrequency>();
 
         private TransactionFrequency _selectedFrequency;
