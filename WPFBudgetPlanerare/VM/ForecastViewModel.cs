@@ -1,27 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
-using WPFBudgetPlanerare.Command;
+﻿using System.Collections.ObjectModel;
 using WPFBudgetPlanerare.Models;
-using WPFBudgetPlanerare.Repositories;
 using WPFBudgetPlanerare.Services;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 namespace WPFBudgetPlanerare.VM
 {
     public class ForecastViewModel : ViewModelBase
     {
-       
+
         private readonly User _user;
         private readonly IReportService _reportService;
 
         public ForecastViewModel(User user, IReportService reportService)
         {
-           
+
             _user = user;
             _reportService = reportService;
 
